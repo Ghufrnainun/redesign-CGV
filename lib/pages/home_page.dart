@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -7,66 +8,69 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // Kita pake SafeArea biar konten gak ketutup status bar HP
       body: SafeArea(
         child: Column(
           children: [
-            // =========================================
-            // BAGIAN 1: HEADER (PINK & LOKASI)
-            // =========================================
+            // HEADER
             _buildCustomHeader(),
             _buildLocationBar(),
 
-            // =========================================
-            // BAGIAN 2: ISI HALAMAN (BISA DI-SCROLL)
-            // =========================================
+            // KONTEN SCROLL KE BAWAH
             Expanded(
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // A. HERO BANNER (Trailer Film)
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      color: Colors.black, // Placeholder gambar trailer
-                      child: Center(
-                        child: Text(
-                          "BANNER TRAILER FILM",
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    // A. HERO BANNER (SLIDER KANAN KIRI)
+                    // Gw ganti jadi scroll horizontal
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildHeroBannerItem(
+                            'assets/images/chainsaw-man-reze.jpg',
+                          ), // Ganti nama file sesuai punya lu
+                          _buildHeroBannerItem(
+                            'assets/images/zootopia_two.jpg',
+                          ),
+                        ],
                       ),
                     ),
 
-                    // B. MEMBER CARD (Merah Gradient)
+                    // B. MEMBER CARD
                     _buildMemberCard(),
 
-                    // C. SECTION: SEDANG TAYANG
+                    // C. SEDANG TAYANG (POSTER ASSETS)
                     _buildSectionTitle("Sedang Tayang"),
-                    _buildMovieScrollList(), // List film geser samping
-                    // D. SECTION: PROMOTION
-                    _buildSectionTitle("Promotion"),
-                    Container(
-                      height: 120,
-                      color: Colors.grey[300],
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      child: Center(child: Text("Promo Banner Slider")),
-                    ),
+                    _buildMovieScrollList(),
 
+                    // D. PROMOTION
+                    _buildSectionTitle("Promotion"),
+                    _buildPromoBanner(),
+
+                    // E. FOOD & BEVERAGE
                     _buildSectionTitle("Food & Beverage"),
                     _buildFoodBanner(),
 
-                    // F. SECTION: SPECIAL FEATURE
+                    // F. SPECIAL FEATURE
                     _buildSectionTitle("CGV Special Feature"),
                     _buildSpecialFeatureList(),
 
-                    // G. SECTION: NEWS
+                    // G. NEWS
                     _buildSectionTitle("News"),
-                    _buildNewsItem(),
-                    _buildNewsItem(),
+                    _buildNewsItem(
+                      "20 Film Seru ini Tayang bulan Desember 2025!",
+                      "Rabu, 10 Desember",
+                      "assets/images/news1.jpg",
+                    ),
+                    _buildNewsItem(
+                      "Rekomendasi Film Keluarga Terbaik di CGV!",
+                      "Rabu, 10 Desember",
+                      "assets/images/news2.jpg",
+                    ),
 
-                    // Spacer bawah biar gak mentok navbar
-                    SizedBox(height: 100),
+                    const SizedBox(height: 120), // Spacer bawah
                   ],
                 ),
               ),
@@ -77,77 +81,129 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // --- WIDGET KECIL-KECIL (METHOD) BIAR KODINGAN RAPI ---
+  // --- WIDGET COMPONENTS ---
 
-  // 1. Header Pink Atas
+  // 1. HEADER (LOGO DARI ASSETS)
   Widget _buildCustomHeader() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: Colors.redAccent, // Warna dasar pink/merah
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: const Color(0xFFFF9999),
       child: Row(
         children: [
-          // Search Bar (Putih)
           Expanded(
             child: Container(
               height: 40,
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.grey.shade300),
               ),
               child: Row(
                 children: [
-                  // Anggap ini Logo CGV text merah
-                  Text(
-                    "CGV*",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                  // LOGO CGV DARI ASSETS
+                  Image.asset(
+                    'assets/images/cgv_logo.png', // Pastikan file ini ada
+                    width: 43,
+                    height: 19,
+                    fit: BoxFit.contain,
+                    errorBuilder: (c, o, s) => const Text(
+                      "CGV",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  Spacer(),
-                  Icon(Icons.search, color: Colors.grey),
+                  const Spacer(),
+                  const Icon(Icons.search, color: Colors.grey),
                 ],
               ),
             ),
           ),
-          SizedBox(width: 16),
-          // Icon User & Notif
-          Icon(Icons.person_outline, color: Colors.white),
-          SizedBox(width: 12),
-          Icon(Icons.notifications_outlined, color: Colors.white),
+          const SizedBox(width: 16),
+          const Icon(Icons.person_outline, color: Colors.black87),
+          const SizedBox(width: 12),
+          const Icon(Icons.notifications_outlined, color: Colors.black87),
         ],
       ),
     );
   }
 
-  // 2. Bar Lokasi
   Widget _buildLocationBar() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       color: Colors.white,
       child: Row(
         children: [
-          Icon(Icons.location_on_outlined, size: 18),
-          SizedBox(width: 8),
-          Text("Jakarta", style: TextStyle(fontWeight: FontWeight.bold)),
-          Spacer(),
-          Icon(Icons.keyboard_arrow_down),
+          const Icon(
+            Icons.location_on_outlined,
+            size: 16,
+            color: Colors.black54,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            "Jakarta",
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          ),
+          const Spacer(),
+          const Icon(Icons.keyboard_arrow_down, size: 16),
         ],
       ),
     );
   }
 
-  // 3. Kartu Member Merah
+  // WIDGET BARU: HERO BANNER ITEM
+  Widget _buildHeroBannerItem(String imagePath) {
+    return Container(
+      width:
+          350, // Lebar banner (biar ada sisa dikit di kanan buat kode kalo bisa discroll)
+      height: 220,
+      margin: const EdgeInsets.only(right: 4), // Jarak antar banner
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: [
+          // Gambar Background
+          SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.black,
+                  child: const Center(
+                    child: Icon(Icons.broken_image, color: Colors.white),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMemberCard() {
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.red[400], // Harusnya gradient, pake solid dulu
-        borderRadius: BorderRadius.circular(12),
+        gradient: const LinearGradient(
+          colors: [Color(0xFFEF5350), Color(0xFFFF8A65)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,35 +214,56 @@ class HomePage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Jullphyw",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      const Icon(Icons.person, color: Colors.white, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        "Jullphyw",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    "Gold Member",
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.stars, color: Colors.yellow, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        "Gold Member",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              Icon(Icons.chevron_right, color: Colors.white),
+              const Icon(Icons.chevron_right, color: Colors.white),
             ],
           ),
-          SizedBox(height: 10),
-          // Progress Bar Palsu
-          LinearProgressIndicator(
-            value: 0.6,
-            backgroundColor: Colors.red[800],
-            color: Colors.white,
+          const SizedBox(height: 16),
+          Stack(
+            children: [
+              Container(height: 4, color: Colors.black26),
+              Container(height: 4, width: 150, color: Colors.white),
+            ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Align(
             alignment: Alignment.centerRight,
             child: Text(
               "300 / 500 poin",
-              style: TextStyle(color: Colors.white, fontSize: 10),
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -194,121 +271,287 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // 4. Judul Section (Reuseable)
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
-          Text(
-            "Lihat Semua >",
-            style: TextStyle(color: Colors.red, fontSize: 12),
+          Row(
+            children: [
+              Text(
+                "Lihat Semua",
+                style: GoogleFonts.poppins(
+                  color: Colors.red,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: Colors.red, size: 16),
+            ],
           ),
         ],
       ),
     );
   }
 
-  // 5. List Film Horizontal
   Widget _buildMovieScrollList() {
+    final List<Map<String, dynamic>> movies = [
+      {
+        'image': 'assets/images/Agak-Laen-poster.jpg',
+        'title': 'Agak Laen',
+        'rating': '9.1',
+        'duration': '1J 59M',
+      },
+      {
+        'image': 'assets/images/Chainsaw-man-Reze-poster.jpg',
+        'title': 'Chainsaw Man Reze Arc',
+        'rating': '9.5',
+        'duration': '1J 55M',
+      },
+      {
+        'image': 'assets/images/Zootopia-Poster.jpg',
+        'title': 'Zootopia 2',
+        'rating': '8.8',
+        'duration': '1J 40M',
+      },
+      {
+        'image': 'assets/images/Jujutsu-poster.jpg',
+        'title': 'Jujutsu Kaisen 0',
+        'rating': '9.3',
+        'duration': '1J 45M',
+      },
+    ];
+
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // <--- KUNCI BIAR BISA GESER SAMPING
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        children: List.generate(3, (index) {
-          // Bikin 3 poster dummy
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(movies.length, (index) {
+          final movie = movies[index];
+
           return Container(
-            margin: EdgeInsets.only(right: 12),
-            width: 120,
+            margin: const EdgeInsets.only(right: 16),
+            width: 130,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Gambar Poster
-                Container(
-                  height: 180,
-                  color: Colors.grey, // Placeholder gambar
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    height: 190,
+                    width: double.infinity,
+                    color: Colors.grey[300],
+                    child: Image.asset(
+                      movie['image'],
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, o, s) =>
+                          const Center(child: Icon(Icons.broken_image)),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
+
+                // 3. JUDUL DINAMIS
                 Text(
-                  "Chainsaw Man",
+                  movie['title'], // <--- Panggil Judul dari Map
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                 ),
-                Text(
-                  "⭐ 9.5",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.star, color: Colors.orange, size: 14),
+                    Text(
+                      " ${movie['rating']}", // <--- Panggil Rating dari Map
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      movie['duration'], // <--- Panggil Durasi dari Map
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           );
         }),
       ),
+    );
+  }
+
+  Widget _buildPromoBanner() {
+    // 1. DATA PROMO (GAMBAR + TEKS DI BAWAHNYA)
+    final List<Map<String, dynamic>> promo = [
+      {
+        'image': 'assets/images/promo1.png',
+        'title': 'CGV Zooper Experice di Central Park!',
+      },
+      {
+        // Pastiin file ini ada di assets ya, kalo ga ada dia bakal error/blank
+        'image': 'assets/images/promo2.jpg',
+        'title':
+            'Dapatkan Trading Card Zootopia untuk pembelian 2 ticket nonton Zootopia di CGV!',
+      },
+      {
+        'image': 'assets/images/promo3.jpg',
+        'title': 'CGV MISSION TO KOREA! #SiAPPUntung',
+      },
+    ];
+
+    return Column(
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(promo.length, (index) {
+              final item = promo[index];
+
+              return Container(
+                margin: const EdgeInsets.only(right: 16),
+                width: 280,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        height: 150,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                        child: Image.asset(
+                          item['image'],
+                          fit: BoxFit.cover,
+                          errorBuilder: (c, o, s) => const Center(
+                            child: Icon(Icons.broken_image, color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+                    Text(
+                      item['title'],
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.inter(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildFoodBanner() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      height: 120, // Tinggi banner
-      width: double.infinity, // Lebar mentok
-      decoration: BoxDecoration(
-        color: Colors.amber, // Placeholder warna kuning CGV
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Kiri: Gambar Popcorn
-          Container(
-            width: 100,
-            color: Colors.amber[700],
-            child: Icon(Icons.fastfood, size: 50, color: Colors.white),
-          ),
-          // Kanan: Teks
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Paket Seru",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text("Diskon popcorn + minum!",
-                      style: TextStyle(fontSize: 12)),
-                ],
+          // 1. GAMBAR (BANNER)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              height: 150,
+              width: double.infinity,
+              color: Colors.grey[300],
+              child: Image.asset(
+                'assets/images/fnb1.png',
+                fit: BoxFit.cover,
+                errorBuilder: (c, o, s) => const Center(
+                  child: Icon(Icons.broken_image, color: Colors.grey),
+                ),
               ),
             ),
-          )
+          ),
+
+          const SizedBox(height: 12),
+          Text(
+            "Pesan makanan lewat App CGV",
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  // F. Special Feature (Kotak 3 biji geser samping)
   Widget _buildSpecialFeatureList() {
+    // List gambar dummy buat feature
+    List<String> featureImages = [
+      'assets/images/Chainsaw-man-Reze-poster.jpg',
+      'assets/images/Jujutsu-poster.jpg',
+      'assets/images/Zootopia-Poster.jpg',
+    ];
+
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Geser samping lagi
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        children: List.generate(3, (index) {
+        children: List.generate(featureImages.length, (index) {
           return Container(
-            margin: EdgeInsets.only(right: 12),
-            width: 140, // Lebih lebar dikit dari poster film
-            height: 140, // Bentuk kotak
+            margin: const EdgeInsets.only(right: 12),
+            width: 140,
+            height: 140,
             decoration: BoxDecoration(
-              color: Colors.purple[100], // Placeholder ungu
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.deepPurple,
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                image: AssetImage(featureImages[index]),
+                fit: BoxFit.cover,
+              ),
             ),
-            child: Center(
-              child: Text("Feature ${index + 1}",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Container(
+              alignment: Alignment.bottomLeft,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Colors.black87, Colors.transparent],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                "Feature ${index + 1}",
+                style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
+              ),
             ),
           );
         }),
@@ -316,41 +559,51 @@ class HomePage extends StatelessWidget {
     );
   }
 
-// G. News Item (Teks Kiri, Gambar Kanan)
-  Widget _buildNewsItem() {
+  Widget _buildNewsItem(String title, String date, String imagePath) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 0, 16, 16), // Margin bawah 16
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Teks Berita (Pake Expanded biar ngisi sisa ruang)
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Update Film Baru Bulan Oktober yang wajib kamu tonton!",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  maxLines: 2, // Maksimal 2 baris
-                  overflow:
-                      TextOverflow.ellipsis, // Kalau kepanjang kasih '...'
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    height: 1.3,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 8),
-                Text("Kamis, 9 Oktober",
-                    style: TextStyle(color: Colors.grey, fontSize: 12)),
+                const SizedBox(height: 8),
+                Text(
+                  date,
+                  style: GoogleFonts.inter(
+                    color: Colors.grey,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             ),
           ),
-          SizedBox(width: 12), // Jarak teks ke gambar
-
-          // 2. Gambar Thumbnail Berita (Kanan)
+          const SizedBox(width: 12),
+          // GAMBAR NEWS DARI ASSETS
           Container(
-            width: 80,
-            height: 80,
+            width: 90,
+            height: 65,
             decoration: BoxDecoration(
-              color: Colors.orange[300],
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.cover,
+                onError: (e, s) {}, // Handle error diem aja
+              ),
             ),
-            child: Icon(Icons.newspaper, color: Colors.white),
           ),
         ],
       ),
