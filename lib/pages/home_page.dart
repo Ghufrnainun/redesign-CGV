@@ -404,14 +404,13 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildPromoBanner() {
-    // 1. DATA PROMO (GAMBAR + TEKS DI BAWAHNYA)
+    // 1. DATA PROMO
     final List<Map<String, dynamic>> promo = [
       {
         'image': 'assets/images/promo1.png',
         'title': 'CGV Zooper Experice di Central Park!',
       },
       {
-        // Pastiin file ini ada di assets ya, kalo ga ada dia bakal error/blank
         'image': 'assets/images/promo2.jpg',
         'title':
             'Dapatkan Trading Card Zootopia untuk pembelian 2 ticket nonton Zootopia di CGV!',
@@ -434,23 +433,31 @@ class HomePage extends StatelessWidget {
 
               return Container(
                 margin: const EdgeInsets.only(right: 16),
-                width: 280,
+                width: 280, // Lebar tetep segini
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        height: 150,
-                        width: double.infinity,
-                        color: Colors.grey[300],
-                        child: Image.asset(
-                          item['image'],
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, o, s) => const Center(
-                            child: Icon(Icons.broken_image, color: Colors.grey),
-                          ),
-                        ),
+                      // HAPUS CONTAINER PEMBUNGKUS (yang ada height 150)
+                      // Langsung Image.asset aja
+                      child: Image.asset(
+                        item['image'],
+                        width: double.infinity, // Mentok ke lebar 280
+                        // 🔥 INI SOLUSINYA:
+                        // Pake fitWidth biar tingginya nyesuain otomatis (gak ke-crop)
+                        fit: BoxFit.fitWidth,
+
+                        errorBuilder: (c, o, s) {
+                          // Kalau error, baru kita kasih container placeholder tinggi 150
+                          return Container(
+                            height: 150,
+                            color: Colors.grey[300],
+                            child: const Center(
+                              child: Icon(Icons.broken_image),
+                            ),
+                          );
+                        },
                       ),
                     ),
 
