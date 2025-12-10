@@ -13,10 +13,17 @@ class _MainPageState extends State<MainPage> {
 
   // List Halaman
   final List<Widget> _pages = [
-    const HomePage(),
-    const Center(child: Text("Halaman Ticket", style: TextStyle(fontSize: 24))),
-    const Center(child: Text("Halaman F&B", style: TextStyle(fontSize: 24))),
+    const HomePage(key: ValueKey('Home')),
     const Center(
+      key: ValueKey('Ticket'),
+      child: Text("Halaman Ticket", style: TextStyle(fontSize: 24)),
+    ),
+    const Center(
+      key: ValueKey('FnB'),
+      child: Text("Halaman F&B", style: TextStyle(fontSize: 24)),
+    ),
+    const Center(
+      key: ValueKey('Profile'),
       child: Text("Halaman Profile", style: TextStyle(fontSize: 24)),
     ),
   ];
@@ -27,7 +34,10 @@ class _MainPageState extends State<MainPage> {
       backgroundColor: Colors.grey[100],
       body: Stack(
         children: [
-          _pages[_selectedIndex],
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: _pages[_selectedIndex],
+          ),
 
           Positioned(
             bottom: 0,
@@ -61,7 +71,7 @@ class _MainPageState extends State<MainPage> {
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             left: _selectedIndex * itemWidth,
-            bottom: 25,
+            bottom: 35,
             child: SizedBox(
               width: itemWidth,
               child: Center(
@@ -69,16 +79,16 @@ class _MainPageState extends State<MainPage> {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: 70,
-                      height: 70,
+                      width: 60,
+                      height: 60,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
                     ),
                     Container(
-                      width: 55,
-                      height: 55,
+                      width: 45,
+                      height: 45,
                       decoration: BoxDecoration(
                         color: const Color(0xFF8B1919),
                         shape: BoxShape.circle,
@@ -130,7 +140,7 @@ class _MainPageState extends State<MainPage> {
           });
         },
         child: Container(
-          color: Colors.transparent, // Biar bisa diklik area kosongnya
+          color: Colors.transparent,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -157,7 +167,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  // Helper buat balikin ikon berdasarkan index
   IconData _getIcon(int index) {
     switch (index) {
       case 0:

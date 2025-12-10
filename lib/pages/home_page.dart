@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final PageController _pageController = PageController(viewportFraction: 0.9);
+  int _currentIndex = 0;
+
+  final List<String> _bannerImages = [
+    'assets/images/chainsaw-man-reze.jpg',
+    'assets/images/zootopia_two.jpg',
+    'assets/images/Agak-Laen-poster.jpg',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -22,20 +36,44 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // A. HERO BANNER (SLIDER KANAN KIRI)
-                    // Gw ganti jadi scroll horizontal
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _buildHeroBannerItem(
-                            'assets/images/chainsaw-man-reze.jpg',
-                          ), // Ganti nama file sesuai punya lu
-                          _buildHeroBannerItem(
-                            'assets/images/zootopia_two.jpg',
+                    // HERO BANNER CAROUSEL
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 220,
+                          child: PageView.builder(
+                            controller: _pageController,
+                            itemCount: _bannerImages.length,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentIndex = index;
+                              });
+                            },
+                            itemBuilder: (context, index) {
+                              return _buildHeroBannerItem(_bannerImages[index]);
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 12),
+                        // INDICATOR DOTS
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            _bannerImages.length,
+                            (index) => Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentIndex == index ? 24 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: _currentIndex == index
+                                    ? const Color(0xFFFF5252)
+                                    : Colors.grey[300],
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
                     // B. MEMBER CARD
@@ -87,68 +125,118 @@ class HomePage extends StatelessWidget {
   Widget _buildCustomHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: const Color(0xFFFF9999),
+      decoration: const BoxDecoration(
+        color: Color(0xFFFF9999),
+        // Add a subtle gradient or pattern if desired, sticking to solid for now but polished
+      ),
       child: Row(
         children: [
           Expanded(
             child: Container(
               height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.grey.shade300),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.transparent, // Clean look
+                ),
               ),
-              child: Row(
-                children: [
-                  // LOGO CGV DARI ASSETS
-                  Image.asset(
-                    'assets/images/cgv_logo.png', // Pastikan file ini ada
-                    width: 43,
-                    height: 19,
-                    fit: BoxFit.contain,
-                    errorBuilder: (c, o, s) => const Text(
-                      "CGV",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    // Search action
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        // LOGO CGV DARI ASSETS
+                        Image.asset(
+                          'assets/images/cgv_logo.png',
+                          width: 43,
+                          height: 19,
+                          fit: BoxFit.contain,
+                          errorBuilder: (c, o, s) => const Text(
+                            "CGV",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        const Icon(Icons.search, color: Colors.grey),
+                      ],
                     ),
                   ),
-                  const Spacer(),
-                  const Icon(Icons.search, color: Colors.grey),
-                ],
+                ),
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          const Icon(Icons.person_outline, color: Colors.black87),
-          const SizedBox(width: 12),
-          const Icon(Icons.notifications_outlined, color: Colors.black87),
+          const SizedBox(width: 8),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.person_outline, color: Colors.black87),
+            splashRadius: 24,
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: Colors.black87,
+            ),
+            splashRadius: 24,
+          ),
         ],
       ),
     );
   }
 
   Widget _buildLocationBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    return Material(
       color: Colors.white,
-      child: Row(
-        children: [
-          const Icon(
-            Icons.location_on_outlined,
-            size: 16,
-            color: Colors.black54,
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey.withOpacity(0.1)),
+            ),
           ),
-          const SizedBox(width: 6),
-          Text(
-            "Jakarta",
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.location_on_outlined,
+                size: 18,
+                color: Colors.black54,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "Jakarta",
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              const Spacer(),
+              const Icon(
+                Icons.keyboard_arrow_down,
+                size: 20,
+                color: Colors.black54,
+              ),
+            ],
           ),
-          const Spacer(),
-          const Icon(Icons.keyboard_arrow_down, size: 16),
-        ],
+        ),
       ),
     );
   }
@@ -156,31 +244,64 @@ class HomePage extends StatelessWidget {
   // WIDGET BARU: HERO BANNER ITEM
   Widget _buildHeroBannerItem(String imagePath) {
     return Container(
-      width:
-          350, // Lebar banner (biar ada sisa dikit di kanan buat kode kalo bisa discroll)
-      height: 220,
-      margin: const EdgeInsets.only(right: 4), // Jarak antar banner
-      child: Stack(
-        alignment: Alignment.bottomLeft,
-        children: [
-          // Gambar Background
-          SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.black,
-                  child: const Center(
-                    child: Icon(Icons.broken_image, color: Colors.white),
-                  ),
-                );
-              },
-            ),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 6,
+        vertical: 8,
+      ), // Added vertical for shadow
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            // Image
+            Positioned.fill(
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[800],
+                    child: const Center(
+                      child: Icon(Icons.broken_image, color: Colors.white54),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Gradient Overlay
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  stops: const [0.6, 1.0],
+                ),
+              ),
+            ),
+
+            // Optional: Add Text or Button on Banner if needed (preserving original doesn't have it, but overlay suggests it's ready)
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {},
+                splashColor: Colors.white.withOpacity(0.1),
+                child: Container(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -282,21 +403,35 @@ class HomePage extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: const Color(0xFF1D1D1D),
             ),
           ),
-          Row(
-            children: [
-              Text(
-                "Lihat Semua",
-                style: GoogleFonts.poppins(
-                  color: Colors.red,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {},
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                child: Row(
+                  children: [
+                    Text(
+                      "Lihat Semua",
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFF5252),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: Color(0xFFFF5252),
+                      size: 16,
+                    ),
+                  ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Colors.red, size: 16),
-            ],
+            ),
           ),
         ],
       ),
@@ -333,6 +468,7 @@ class HomePage extends StatelessWidget {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,62 +476,94 @@ class HomePage extends StatelessWidget {
           final movie = movies[index];
 
           return Container(
-            margin: const EdgeInsets.only(right: 16),
-            width: 130,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    height: 190,
+            margin: const EdgeInsets.only(right: 16, bottom: 8),
+            width: 140, // Increased width slightly
+            child: InkWell(
+              onTap: () {
+                // Navigate to detail
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 210, // Taller for better proportion
                     width: double.infinity,
-                    color: Colors.grey[300],
-                    child: Image.asset(
-                      movie['image'],
-                      width: double.infinity,
-                      height: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (c, o, s) =>
-                          const Center(child: Icon(Icons.broken_image)),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                // 3. JUDUL DINAMIS
-                Text(
-                  movie['title'], // <--- Panggil Judul dari Map
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.orange, size: 14),
-                    Text(
-                      " ${movie['rating']}", // <--- Panggil Rating dari Map
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        movie['image'],
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (c, o, s) =>
+                            const Center(child: Icon(Icons.broken_image)),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      movie['duration'], // <--- Panggil Durasi dari Map
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // 3. JUDUL DINAMIS
+                  Text(
+                    movie['title'],
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: const Color(0xFF1D1D1D),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star_rounded,
+                        color: Color(0xFFFFB300),
+                        size: 16,
+                      ),
+                      Text(
+                        " ${movie['rating']}",
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          movie['duration'],
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         }),
@@ -425,6 +593,7 @@ class HomePage extends StatelessWidget {
       children: [
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,47 +601,66 @@ class HomePage extends StatelessWidget {
               final item = promo[index];
 
               return Container(
-                margin: const EdgeInsets.only(right: 16),
-                width: 280, // Lebar tetep segini
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      // HAPUS CONTAINER PEMBUNGKUS (yang ada height 150)
-                      // Langsung Image.asset aja
-                      child: Image.asset(
-                        item['image'],
-                        width: double.infinity, // Mentok ke lebar 280
-                        // 🔥 INI SOLUSINYA:
-                        // Pake fitWidth biar tingginya nyesuain otomatis (gak ke-crop)
-                        fit: BoxFit.fitWidth,
-
-                        errorBuilder: (c, o, s) {
-                          // Kalau error, baru kita kasih container placeholder tinggi 150
-                          return Container(
-                            height: 150,
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: Icon(Icons.broken_image),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-                    Text(
-                      item['title'],
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                      ),
+                margin: const EdgeInsets.only(right: 16, bottom: 8),
+                width: 280,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
                     ),
                   ],
+                  color: Colors.white,
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(12),
+                          ),
+                          child: Image.asset(
+                            item['image'],
+                            width: double.infinity,
+                            fit: BoxFit.fitWidth,
+                            errorBuilder: (c, o, s) {
+                              return Container(
+                                height: 150,
+                                color: Colors.grey[200],
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            item['title'],
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.inter(
+                              color: const Color(0xFF1D1D1D),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             }),
@@ -529,6 +717,7 @@ class HomePage extends StatelessWidget {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: List.generate(featureImages.length, (index) {
@@ -537,27 +726,50 @@ class HomePage extends StatelessWidget {
             width: 140,
             height: 140,
             decoration: BoxDecoration(
-              color: Colors.deepPurple,
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: AssetImage(featureImages[index]),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Container(
-              alignment: Alignment.bottomLeft,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Colors.black87, Colors.transparent],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
                 ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                "Feature ${index + 1}",
-                style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(featureImages[index], fit: BoxFit.cover),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withOpacity(0.8),
+                          Colors.transparent,
+                        ],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 12,
+                    left: 12,
+                    right: 12,
+                    child: Text(
+                      "Feature ${index + 1}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -567,52 +779,73 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildNewsItem(String title, String date, String imagePath) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    height: 1.3,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          height: 1.4,
+                          color: const Color(0xFF1D1D1D),
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        date,
+                        style: GoogleFonts.inter(
+                          color: Colors.grey[600],
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  date,
-                  style: GoogleFonts.inter(
-                    color: Colors.grey,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          // GAMBAR NEWS DARI ASSETS
-          Container(
-            width: 90,
-            height: 65,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: AssetImage(imagePath),
-                fit: BoxFit.cover,
-                onError: (e, s) {}, // Handle error diem aja
               ),
-            ),
+              // GAMBAR NEWS DARI ASSETS
+              Container(
+                width: 100,
+                height: 75,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Container(color: Colors.grey[200]),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
