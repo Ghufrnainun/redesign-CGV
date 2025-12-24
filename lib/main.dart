@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/main_page.dart';
-
+import 'pages/auth_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const MainPage(), // <--- Panggil MainPage di sini
+      home: const AuthPage(),
     );
   }
 }
