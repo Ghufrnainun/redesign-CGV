@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Function(int)? onTabChange;
+
+  const HomePage({super.key, this.onTabChange});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -11,12 +13,134 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController(viewportFraction: 0.9);
   int _currentIndex = 0;
+  String _selectedLocation = "Jakarta"; // Default location
 
   final List<String> _bannerImages = [
     'assets/images/chainsaw-man-reze.jpg',
     'assets/images/zootopia_two.jpg',
     'assets/images/Agak-Laen-poster.jpg',
   ];
+
+  void _showLocationPicker() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            children: [
+              // HANDLE BAR
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 12, bottom: 8),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+
+              // SEARCH BAR
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search",
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                  ),
+                ),
+              ),
+
+              // CURRENT LOCATION
+              ListTile(
+                title: RichText(
+                  text: TextSpan(
+                    text: "$_selectedLocation ",
+                    style: GoogleFonts.poppins(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "· Lokasi Sekarang",
+                        style: GoogleFonts.inter(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () => Navigator.pop(context),
+              ),
+              const Divider(height: 1),
+
+              // LIST CITIES
+              Expanded(
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    _buildCityItem("Bekasi"),
+                    _buildCityItem("Depok"),
+                    _buildCityItem("Bogor"),
+                    _buildCityItem("Tangerang"),
+                    _buildCityItem("Serang"),
+                    _buildCityItem("Cikarang"),
+                    _buildCityItem("Karawang"),
+                    _buildCityItem("Bandung"),
+                    _buildCityItem("Tegal"),
+                    _buildCityItem("Solo"),
+                    _buildCityItem("Blitar"),
+                    _buildCityItem("Surabaya"),
+                    _buildCityItem("Malang"),
+                    _buildCityItem("Jember"),
+                    _buildCityItem("Balikpapan"),
+                    _buildCityItem("Medan"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCityItem(String city) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            city,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+          onTap: () {
+            setState(() {
+              _selectedLocation = city;
+            });
+            Navigator.pop(context);
+          },
+        ),
+        const Divider(height: 1, indent: 16, endIndent: 16),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +212,18 @@ class _HomePageState extends State<HomePage> {
                     _buildPromoBanner(),
 
                     // E. FOOD & BEVERAGE
-                    _buildSectionTitle("Food & Beverage"),
-                    _buildFoodBanner(),
+                    _buildSectionTitle(
+                      "Food & Beverage",
+                      onTap: () {
+                        widget.onTabChange?.call(2); // Pindah ke tab F&B
+                      },
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        widget.onTabChange?.call(2); // Pindah ke tab F&B
+                      },
+                      child: _buildFoodBanner(),
+                    ),
 
                     // F. SPECIAL FEATURE
                     _buildSectionTitle("CGV Special Feature"),
@@ -205,7 +339,7 @@ class _HomePageState extends State<HomePage> {
     return Material(
       color: Colors.white,
       child: InkWell(
-        onTap: () {},
+        onTap: _showLocationPicker,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
@@ -222,7 +356,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(width: 8),
               Text(
-                "Jakarta",
+                _selectedLocation,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
@@ -392,7 +526,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, {VoidCallback? onTap}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
       child: Row(
@@ -409,7 +543,7 @@ class _HomePageState extends State<HomePage> {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () {},
+              onTap: onTap, // GUNAKAN CALLBACK DISINI
               borderRadius: BorderRadius.circular(4),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),

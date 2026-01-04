@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
+import 'fnb_page.dart';
+import 'profile_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -11,25 +13,25 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  // List Halaman
-  final List<Widget> _pages = [
-    const HomePage(key: ValueKey('Home')),
-    const Center(
-      key: ValueKey('Ticket'),
-      child: Text("Halaman Ticket", style: TextStyle(fontSize: 24)),
-    ),
-    const Center(
-      key: ValueKey('FnB'),
-      child: Text("Halaman F&B", style: TextStyle(fontSize: 24)),
-    ),
-    const Center(
-      key: ValueKey('Profile'),
-      child: Text("Halaman Profile", style: TextStyle(fontSize: 24)),
-    ),
-  ];
+  void _changeTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // List Halaman (Initialized here to access _changeTab)
+    final List<Widget> _pages = [
+      HomePage(key: const ValueKey('Home'), onTabChange: _changeTab),
+      const Center(
+        key: ValueKey('Ticket'),
+        child: Text("Halaman Ticket", style: TextStyle(fontSize: 24)),
+      ),
+      const FnbPage(key: ValueKey('FnB')),
+      const ProfilePage(key: ValueKey('Profile')),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Stack(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home_page.dart'; // Import buat navigasi pas tombol Login diklik
+import 'main_page.dart'; // Navigasi ke Main Page (Shell) biar ada navbar
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -229,10 +229,10 @@ class _AuthPageState extends State<AuthPage> {
           height: 50,
           child: ElevatedButton(
             onPressed: () {
-              // Navigasi ke Home Page
+              // Navigasi ke Main Page (bukan HomePage) biar ada Navbar
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(builder: (context) => const MainPage()),
               );
             },
             style: ElevatedButton.styleFrom(

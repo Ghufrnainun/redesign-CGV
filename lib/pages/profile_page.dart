@@ -7,7 +7,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // DATA DINAMIS (nanti bisa dari API)
-    final String name = "Gupron Jawa";
+    final String name = "Gupron";
     final String userId = "usr1212842910";
     final String phone = "081233445566";
     final String cardNumber = "6699 1212 1098 1234";
@@ -73,13 +73,17 @@ class ProfilePage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name,
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600, fontSize: 14)),
+              Text(
+                name,
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
               Text(userId, style: const TextStyle(fontSize: 11)),
               Text(phone, style: const TextStyle(fontSize: 11)),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -105,15 +109,19 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name,
-                    style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600)),
+                Text(
+                  name,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(cardNumber,
-                    style: GoogleFonts.inter(
-                        color: Colors.white70, fontSize: 12)),
+                Text(
+                  cardNumber,
+                  style: GoogleFonts.inter(color: Colors.white70, fontSize: 12),
+                ),
               ],
             ),
           ),
@@ -135,8 +143,10 @@ class ProfilePage extends StatelessWidget {
     return ListTile(
       leading: const CircleAvatar(backgroundColor: Colors.red),
       title: Text(name),
-      trailing: const Text("Registered",
-          style: TextStyle(color: Colors.red, fontSize: 12)),
+      trailing: const Text(
+        "Registered",
+        style: TextStyle(color: Colors.red, fontSize: 12),
+      ),
     );
   }
 
@@ -219,18 +229,20 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: GoogleFonts.poppins(
-                  fontSize: 14, fontWeight: FontWeight.w600)),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 6)
+                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6),
               ],
             ),
             child: Column(children: children),
