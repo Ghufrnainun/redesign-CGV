@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:redesign_cgv/pages/now_playing_page.dart';
+import 'package:redesign_cgv/widgets/custom_header.dart';
 
 class HomePage extends StatefulWidget {
   final Function(int)? onTabChange;
@@ -150,7 +152,8 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             // HEADER
-            _buildCustomHeader(),
+            // HEADER
+            const CustomHeader(isHome: true),
             _buildLocationBar(),
 
             // KONTEN SCROLL KE BAWAH
@@ -256,84 +259,6 @@ class _HomePageState extends State<HomePage> {
   // --- WIDGET COMPONENTS ---
 
   // 1. HEADER (LOGO DARI ASSETS)
-  Widget _buildCustomHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: Color(0xFFFF9999),
-        // Add a subtle gradient or pattern if desired, sticking to solid for now but polished
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-                border: Border.all(
-                  color: Colors.transparent, // Clean look
-                ),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    // Search action
-                  },
-                  borderRadius: BorderRadius.circular(20),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Row(
-                      children: [
-                        // LOGO CGV DARI ASSETS
-                        Image.asset(
-                          'assets/images/cgv_logo.png',
-                          width: 43,
-                          height: 19,
-                          fit: BoxFit.contain,
-                          errorBuilder: (c, o, s) => const Text(
-                            "CGV",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const Spacer(),
-                        const Icon(Icons.search, color: Colors.grey),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.person_outline, color: Colors.black87),
-            splashRadius: 24,
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications_outlined,
-              color: Colors.black87,
-            ),
-            splashRadius: 24,
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildLocationBar() {
     return Material(
@@ -441,87 +366,106 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMemberCard() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFEF5350), Color(0xFFFF8A65)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.red.withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.person, color: Colors.white, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Jullphyw",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.stars, color: Colors.yellow, size: 14),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Gold Member",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            widget.onTabChange?.call(3); // Navigate to Profile tab
+          },
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFEF5350), Color(0xFFFF8A65)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
               ),
-              const Icon(Icons.chevron_right, color: Colors.white),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Stack(
-            children: [
-              Container(height: 4, color: Colors.black26),
-              Container(height: 4, width: 150, color: Colors.white),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "300 / 500 poin",
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.red.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Jullphyw",
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.stars,
+                              color: Colors.yellow,
+                              size: 14,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Gold Member",
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Icon(Icons.chevron_right, color: Colors.white),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Stack(
+                  children: [
+                    Container(height: 4, color: Colors.black26),
+                    Container(height: 4, width: 150, color: Colors.white),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "300 / 500 poin",
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -543,7 +487,20 @@ class _HomePageState extends State<HomePage> {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: onTap, // GUNAKAN CALLBACK DISINI
+              onTap:
+                  onTap ??
+                  () {
+                    // Default action if no specific onTap is provided
+                    // For "Sedang Tayang", we want to navigate to NowPlayingPage
+                    if (title == "Sedang Tayang") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NowPlayingPage(),
+                        ),
+                      );
+                    }
+                  },
               borderRadius: BorderRadius.circular(4),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),

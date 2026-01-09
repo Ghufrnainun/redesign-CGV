@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'home_page.dart';
 import 'fnb_page.dart';
 import 'profile_page.dart';
@@ -22,98 +23,99 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     // List Halaman (Initialized here to access _changeTab)
-    final List<Widget> _pages = [
+    final List<Widget> pages = [
       HomePage(key: const ValueKey('Home'), onTabChange: _changeTab),
       const Center(
         key: ValueKey('Ticket'),
         child: Text("Halaman Ticket", style: TextStyle(fontSize: 24)),
       ),
       const FnbPage(key: ValueKey('FnB')),
-      const ProfilePage(key: ValueKey('Profile')),
+      ProfilePage(key: const ValueKey('Profile'), onTabChange: _changeTab),
     ];
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white, // FIX: Changed to white to match design
       body: Stack(
         children: [
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: _pages[_selectedIndex],
+          // Page Content
+          Positioned.fill(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: pages[_selectedIndex],
+            ),
           ),
 
+          // Bottom Navigation Bar (Anchored)
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: _buildDynamicNavbar(context),
+            child: _buildBottomNavBar(context),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDynamicNavbar(BuildContext context) {
+  Widget _buildBottomNavBar(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = screenWidth / 4;
 
     return SizedBox(
-      height: 100,
+      height: 90, // Total height including floating icon
       child: Stack(
         alignment: Alignment.bottomCenter,
+        clipBehavior: Clip.none, // Allow icon to overflow upward
         children: [
+          // ===== 1. RED BAR (Full Width, Rounded Top) =====
           Container(
             height: 70,
-            decoration: const BoxDecoration(
-              color: Color(0xFFFF3D3D),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            width: double.infinity, // CRITICAL: Full width
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF3D3D),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24), // Smooth rounded corners
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                ),
+              ],
             ),
           ),
 
+          // ===== 2. FLOATING ICON (Active Tab Indicator) =====
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            left: _selectedIndex * itemWidth,
-            bottom: 35,
-            child: SizedBox(
-              width: itemWidth,
-              child: Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Container(
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF8B1919),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _getIcon(_selectedIndex),
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ],
-                ),
+            left: (_selectedIndex * itemWidth) + (itemWidth / 2) - 28,
+            bottom: 40, // Positions icon to overlap the top edge
+            child: Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: const Color(0xFF8B1919), // Dark red
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 3),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Icon(
+                _getIcon(_selectedIndex),
+                color: Colors.white,
+                size: 26,
               ),
             ),
           ),
 
+          // ===== 3. NAV ITEMS (Icons + Labels) =====
           SizedBox(
             height: 70,
             child: Row(
@@ -130,33 +132,32 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  // WIDGET TOMBOL (BIASA)
   Widget _buildNavItem(int index, String label, IconData icon) {
     bool isSelected = _selectedIndex == index;
 
     return Expanded(
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           setState(() {
             _selectedIndex = index;
           });
         },
-        child: Container(
-          color: Colors.transparent,
+        child: SizedBox(
+          height: 70,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Icon fades out when selected
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: isSelected ? 0.0 : 1.0,
-                child: Icon(icon, color: Colors.white),
+                child: Icon(icon, color: Colors.white, size: 24),
               ),
-
               const SizedBox(height: 4),
-
               Text(
                 label,
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 12,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,

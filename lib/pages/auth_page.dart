@@ -175,7 +175,7 @@ class _AuthPageState extends State<AuthPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Halo, Temankuu!!",
+          "Selamat datang di CGV",
           style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 20),
@@ -294,7 +294,7 @@ class _AuthPageState extends State<AuthPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Halo, Temankuu!!",
+          "Selamat datang di CGV",
           style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 20),
